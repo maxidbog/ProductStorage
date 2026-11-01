@@ -1,4 +1,8 @@
 @host = https://localhost:7006
 
 ###
-GRPC {{host}}/ProductGrpcService/GetProduct
+GRPC {{host}}/ProductService/GetProduct
+
+{
+  "id": "132cfbb5-56b7-42d7-aaaf-6bb52d422cb9"
+}

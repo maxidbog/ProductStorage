@@ -9,7 +9,7 @@ Host.CreateDefaultBuilder(args)
         {
             options.ListenLocalhost(7006, listenOptions =>
             {
-                listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                 listenOptions.UseHttps();
             });
         });

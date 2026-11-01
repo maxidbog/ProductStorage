@@ -19,19 +19,22 @@ public class Startup
         services.AddScoped<ProductStorage.Application.ProductService>();
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
         services.AddGrpc();
+        services.AddGrpcReflection();
         services.AddControllers();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(options =>
+            options.CustomSchemaIds(type => type.FullName!.Replace("+", ".")));
     }
 
     public void Configure(IApplicationBuilder app)
     {
         app.UseRouting();
+        app.UseSwagger();
+        app.UseSwaggerUI();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapGrpcService<ProductGrpcService>();
+            endpoints.MapGrpcReflectionService();
             endpoints.MapControllers();
         });
-        app.UseSwagger();
-        app.UseSwaggerUI();
     }
 }
