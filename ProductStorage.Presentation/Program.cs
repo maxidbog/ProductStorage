@@ -1,6 +1,18 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ProductStorage.Presentation;
 
-app.MapGet("/", () => "Hello World!");
-
-app.Run();
+Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(builder =>
+    {
+        builder.UseStartup<Startup>();
+        builder.ConfigureKestrel(options =>
+        {
+            options.ListenLocalhost(7006, listenOptions =>
+            {
+                listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+                listenOptions.UseHttps();
+            });
+        });
+    })
+    .Build()
+    .Run();

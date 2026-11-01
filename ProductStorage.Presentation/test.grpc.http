@@ -1,0 +1,4 @@
+@host = https://localhost:7006
+
+###
+GRPC {{host}}/ProductGrpcService/GetProduct

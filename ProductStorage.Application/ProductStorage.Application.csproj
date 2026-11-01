@@ -11,4 +11,8 @@
       <ProjectReference Include="..\ProductStorage.Infrastructure\ProductStorage.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="12.2.0" />
+    </ItemGroup>
+
 </Project>

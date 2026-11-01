@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+service ProductService {
+  rpc ListProducts (ListProductsRequest) returns (ListProductsResponse);
+  rpc GetProduct (GetProductRequest) returns (Product);
+  rpc CreateProduct (CreateProductRequest) returns (Product);
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+  double weight = 4;
+  ProductType type = 5;
+  google.protobuf.Timestamp created_at = 6;
+  int32 warehouse_number = 7;
+}
+
+enum ProductType {
+  UNKNOWN = 0;
+  GENERAL = 1;
+  HOUSEHOLD_CHEMICALS = 2;
+  APPLIANCES = 3;
+  FOOD = 4;
+}
+
+message ListProductsRequest {
+  google.protobuf.Timestamp created_from = 1;
+  google.protobuf.Timestamp created_to = 2;
+  ProductType type = 3;
+  int32 warehouse_number = 4;
+  int32 page = 5;
+  int32 page_size = 6;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  int32 total_count = 4;
+}
+
+message GetProductRequest { string id = 1; }
+
+message CreateProductRequest {
+  string name = 1;
+  double price = 2;
+  double weight = 3;
+  ProductType type = 4;
+  int32 warehouse_number = 5;
+}

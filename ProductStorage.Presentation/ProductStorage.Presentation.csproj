@@ -10,4 +10,20 @@
       <ProjectReference Include="..\ProductStorage.Application\ProductStorage.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Protobuf Include="Protos\products.proto" GrpcServices="Server" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="12.2.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+      <PackageReference Include="Google.Protobuf" Version="3.37.0-rc1" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.85.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.85.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+    </ItemGroup>
+
 </Project>
