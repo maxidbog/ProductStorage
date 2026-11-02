@@ -12,6 +12,11 @@ Host.CreateDefaultBuilder(args)
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                 listenOptions.UseHttps();
             });
+            options.ListenLocalhost(7007, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http2;
+                listenOptions.UseHttps();
+            });
         });
     })
     .Build()

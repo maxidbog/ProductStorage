@@ -16,7 +16,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IProductRepository, ProductRepository>();
-        services.AddScoped<ProductStorage.Application.ProductService>();
+        services.AddScoped<Application.ProductService>();
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
         services.AddGrpc();
         services.AddGrpcReflection();
@@ -35,6 +35,7 @@ public class Startup
             endpoints.MapGrpcService<ProductGrpcService>();
             endpoints.MapGrpcReflectionService();
             endpoints.MapControllers();
+            endpoints.MapGet("/", () => Results.Redirect("/swagger"));
         });
     }
 }

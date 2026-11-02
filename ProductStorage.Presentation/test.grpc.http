@@ -1,7 +1,7 @@
-@host = https://localhost:7006
+@host = https://localhost:7007
 
 ###
-GRPC {{host}}/ProductService/GetProduct
+GRPCS localhost:7007/ProductService/GetProduct
 
 {
   "id": "132cfbb5-56b7-42d7-aaaf-6bb52d422cb9"
