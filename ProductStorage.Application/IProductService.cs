@@ -6,5 +6,5 @@ public interface IProductService
 {
    Task<PagedResult<Product>> GetPagedAsync(ProductFilter filter, CancellationToken cancellationToken);
    Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-   Task<Product> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken);
+   Task<Guid> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken);
 }

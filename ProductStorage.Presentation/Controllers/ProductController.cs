@@ -28,11 +28,11 @@ public class ProductController(IProductService service) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(
+    public async Task<ActionResult<Guid>> CreateProduct(
         [FromBody] ApplicationCreateProductRequest request,
         CancellationToken cancellationToken)
     {
-        var product = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetProduct), new { productId = product.Id }, product);
+        var id = await service.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetProduct), new { productId = id }, id);
     }
 }

@@ -16,7 +16,7 @@ service ProductService {
     };
   }
 
-  rpc CreateProduct (CreateProductRequest) returns (Product) {
+  rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse) {
     option (google.api.http) = {
       post: "/v1/products"
       body: "*"
@@ -66,4 +66,8 @@ message CreateProductRequest {
   double weight = 3;
   ProductType type = 4;
   int32 warehouse_number = 5;
+}
+
+message CreateProductResponse {
+  string id = 1;
 }

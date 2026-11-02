@@ -41,10 +41,11 @@ public class ProductService(
         return product ?? throw new ProductNotFoundException(id);
     }
 
-    public async Task<Product> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
+    public async Task<Guid> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
     {
         await createValidator.ValidateAndThrowAsync(request, cancellationToken);
-        return await repository.AddAsync(new Product(Guid.NewGuid(), request.Name.Trim(), request.Price,
+        var product = await repository.AddAsync(new Product(Guid.NewGuid(), request.Name.Trim(), request.Price,
             request.Weight, request.Type, DateTimeOffset.UtcNow, request.WarehouseNumber), cancellationToken);
+        return product.Id;
     }
 }

@@ -70,9 +70,9 @@ static async Task CreateProductAsync(ProductService.ProductServiceClient client)
         WarehouseNumber = ReadPositiveInt("Номер склада: ")
     };
 
-    var product = await client.CreateProductAsync(request);
+    var response = await client.CreateProductAsync(request);
     Console.WriteLine("Товар создан:");
-    PrintProduct(product);
+    Console.WriteLine($"  ID: {response.Id}");
 }
 
 static async Task GetProductAsync(ProductService.ProductServiceClient client)

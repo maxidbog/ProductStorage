@@ -8,12 +8,15 @@ namespace ProductStorage.Presentation;
 
 public class ProductGrpcService(IProductService service) : ProductService.ProductServiceBase
 {
-    public override async Task<Product> CreateProduct(CreateProductRequest request, ServerCallContext context)
+    public override async Task<CreateProductResponse> CreateProduct(CreateProductRequest request, ServerCallContext context)
     {
-        var product = await service.CreateAsync(new Application.CreateProductRequest(
+        var guid = await service.CreateAsync(new Application.CreateProductRequest(
             request.Name, (decimal)request.Price, (decimal)request.Weight,
             ToDomainType(request.Type), request.WarehouseNumber), context.CancellationToken);
-        return ToGrpc(product);
+        return new CreateProductResponse
+        {
+            Id = guid.ToString(),
+        };
     }
 
     public override async Task<Product> GetProduct(GetProductRequest request, ServerCallContext context)
