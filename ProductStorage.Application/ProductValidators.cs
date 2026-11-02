@@ -6,7 +6,7 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
 {
     public CreateProductRequestValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(200).WithMessage("Product name must be between 1 and 200 characters.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200).WithMessage("Product name must less than 200 characters and not empty.");
         RuleFor(x => x.Price).GreaterThan(0);
         RuleFor(x => x.Weight).GreaterThan(0);
         RuleFor(x => x.Type).IsInEnum().NotEqual(Domain.ProductType.Unknown);
