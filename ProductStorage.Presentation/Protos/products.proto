@@ -1,11 +1,27 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 service ProductService {
-  rpc ListProducts (ListProductsRequest) returns (ListProductsResponse);
-  rpc GetProduct (GetProductRequest) returns (Product);
-  rpc CreateProduct (CreateProductRequest) returns (Product);
+  rpc ListProducts (ListProductsRequest) returns (ListProductsResponse) {
+    option (google.api.http) = {
+      get: "/v1/products"
+    };
+  }
+
+  rpc GetProduct (GetProductRequest) returns (Product) {
+    option (google.api.http) = {
+      get: "/v1/products/{id}"
+    };
+  }
+
+  rpc CreateProduct (CreateProductRequest) returns (Product) {
+    option (google.api.http) = {
+      post: "/v1/products"
+      body: "*"
+    };
+  }
 }
 
 message Product {

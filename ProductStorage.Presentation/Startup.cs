@@ -1,6 +1,8 @@
 using FluentValidation;
 using ProductStorage.Application;
 using ProductStorage.Infrastructure;
+using ProductStorage.Presentation.Interceptors;
+using ProductStorage.Presentation.Middleware;
 
 namespace ProductStorage.Presentation;
 
@@ -16,17 +18,21 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IProductRepository, ProductRepository>();
-        services.AddScoped<Application.ProductService>();
+        services.AddScoped<IProductService, Application.ProductService>();
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
-        services.AddGrpc();
+        services.AddGrpc(options => options.Interceptors.Add<GrpcLoggingInterceptor>()).AddJsonTranscoding();
         services.AddGrpcReflection();
         services.AddControllers();
         services.AddSwaggerGen(options =>
-            options.CustomSchemaIds(type => type.FullName!.Replace("+", ".")));
+        {
+            options.CustomSchemaIds(type => type.FullName!.Replace("+", "."));
+        });
+        services.AddGrpcSwagger();
     }
 
     public void Configure(IApplicationBuilder app)
     {
+        app.UseMiddleware<ErrorHandlingMiddleware>();
         app.UseRouting();
         app.UseSwagger();
         app.UseSwaggerUI();

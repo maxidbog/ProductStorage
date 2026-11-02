@@ -2,10 +2,11 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Enum = System.Enum;
 using ProductStorage.Application;
+using ProductStorage.Application.Exceptions;
 
 namespace ProductStorage.Presentation;
 
-public class ProductGrpcService(Application.ProductService service) : ProductService.ProductServiceBase
+public class ProductGrpcService(IProductService service) : ProductService.ProductServiceBase
 {
     public override async Task<Product> CreateProduct(CreateProductRequest request, ServerCallContext context)
     {
@@ -17,12 +18,18 @@ public class ProductGrpcService(Application.ProductService service) : ProductSer
 
     public override async Task<Product> GetProduct(GetProductRequest request, ServerCallContext context)
     {
-        Console.WriteLine("GetProduct");
         if (!Guid.TryParse(request.Id, out var id))
             throw new RpcException(new Status(StatusCode.InvalidArgument, "id must be a valid GUID."));
-        var product = await service.GetByIdAsync(id, context.CancellationToken)
-                      ?? throw new RpcException(new Status(StatusCode.NotFound, "Product was not found."));
-        return ToGrpc(product);
+
+        try
+        {
+            var product = await service.GetByIdAsync(id, context.CancellationToken);
+            return ToGrpc(product);
+        }
+        catch (ProductNotFoundException exception)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, exception.Message));
+        }
     }
 
     public override async Task<ListProductsResponse> ListProducts(ListProductsRequest request, ServerCallContext context)

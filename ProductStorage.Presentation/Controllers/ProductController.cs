@@ -7,7 +7,7 @@ namespace ProductStorage.Presentation.Controllers;
 
 [ApiController]
 [Route("products")]
-public class ProductController(Application.ProductService service) : ControllerBase
+public class ProductController(IProductService service) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<PagedResult<Product>>> ListProducts(

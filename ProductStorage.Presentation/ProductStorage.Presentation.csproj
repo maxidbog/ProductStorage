@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <IncludeHttpRuleProtos>true</IncludeHttpRuleProtos>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,7 +25,9 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="9.0.22" />
+      <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.9.19" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
 </Project>

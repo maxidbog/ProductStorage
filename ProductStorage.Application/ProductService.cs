@@ -1,18 +1,14 @@
 using FluentValidation;
+using ProductStorage.Application.Exceptions;
 using ProductStorage.Domain;
 using ProductStorage.Infrastructure;
 
 namespace ProductStorage.Application;
 
-public sealed class ProductNotFoundException(Guid id) : Exception($"Product '{id}' was not found.")
-{
-    public Guid Id { get; } = id;
-}
-
-public sealed class ProductService(
+public class ProductService(
     IProductRepository repository,
     IValidator<CreateProductRequest> createValidator,
-    IValidator<ProductFilter> filterValidator)
+    IValidator<ProductFilter> filterValidator) : IProductService
 {
     public async Task<PagedResult<Product>> GetPagedAsync(ProductFilter filter, CancellationToken cancellationToken = default)
     {
@@ -36,8 +32,14 @@ public sealed class ProductService(
         return new PagedResult<Product>(items, filter.Page, filter.PageSize, total);
     }
 
-    public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        repository.GetByIdAsync(id, cancellationToken);
+    public async Task<Product> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var product = await repository.GetByIdAsync(id, cancellationToken);
+
+        return product ?? throw new ProductNotFoundException(id);
+    }
 
     public async Task<Product> CreateAsync(CreateProductRequest request, CancellationToken cancellationToken = default)
     {
