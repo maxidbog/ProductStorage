@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductStorage.Application;
 using ProductStorage.Domain;
 using ApplicationCreateProductRequest = ProductStorage.Application.CreateProductRequest;
+using ApplicationUpdateProductRequest = ProductStorage.Application.UpdateProductRequest;
 
 namespace ProductStorage.Presentation.Controllers;
 
@@ -34,5 +35,15 @@ public class ProductController(IProductService service) : ControllerBase
     {
         var id = await service.CreateAsync(request, cancellationToken);
         return CreatedAtAction(nameof(GetProduct), new { productId = id }, id);
+    }
+
+    [HttpPut("{productId:guid}")]
+    public async Task<ActionResult<Product>> UpdateProduct(
+        Guid productId,
+        [FromBody] ApplicationUpdateProductRequest request,
+        CancellationToken cancellationToken)
+    {
+        var product = await service.UpdateAsync(productId, request, cancellationToken);
+        return Ok(product);
     }
 }

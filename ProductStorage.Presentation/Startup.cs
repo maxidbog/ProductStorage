@@ -17,7 +17,10 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IProductRepository, ProductRepository>();
+        var connectionString = _configuration.GetConnectionString("Postgres")
+            ?? throw new InvalidOperationException("Connection string 'Postgres' is not configured.");
+
+        services.AddSingleton<IProductRepository>(_ => new ProductRepository(connectionString));
         services.AddScoped<IProductService, Application.ProductService>();
         services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
         services.AddGrpc(options => options.Interceptors.Add<GrpcLoggingInterceptor>()).AddJsonTranscoding();

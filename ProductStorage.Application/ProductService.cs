@@ -8,28 +8,21 @@ namespace ProductStorage.Application;
 public class ProductService(
     IProductRepository repository,
     IValidator<CreateProductRequest> createValidator,
-    IValidator<ProductFilter> filterValidator) : IProductService
+    IValidator<ProductFilter> filterValidator,
+    IValidator<UpdateProductRequest> updateValidator) : IProductService
 {
     public async Task<PagedResult<Product>> GetPagedAsync(ProductFilter filter, CancellationToken cancellationToken = default)
     {
         await filterValidator.ValidateAndThrowAsync(filter, cancellationToken);
-        var products = await repository.GetAllAsync(cancellationToken);
-        var query = products.AsEnumerable();
-        if (filter.CreatedFrom.HasValue)
-            query = query.Where(x => x.CreatedAt >= filter.CreatedFrom.Value);
-        if (filter.CreatedTo.HasValue)
-            query = query.Where(x => x.CreatedAt <= filter.CreatedTo.Value);
-        if (filter.Type.HasValue)
-            query = query.Where(x => x.Type == filter.Type.Value);
-        if (filter.WarehouseNumber.HasValue)
-            query = query.Where(x => x.WarehouseNumber == filter.WarehouseNumber.Value);
-
-        var total = query.Count();
-        var items = query.OrderBy(x => x.CreatedAt)
-            .Skip((filter.Page - 1) * filter.PageSize)
-            .Take(filter.PageSize)
-            .ToArray();
-        return new PagedResult<Product>(items, filter.Page, filter.PageSize, total);
+        var (items, totalCount) = await repository.GetPagedAsync(
+            filter.CreatedFrom,
+            filter.CreatedTo,
+            filter.Type,
+            filter.WarehouseNumber,
+            filter.Page,
+            filter.PageSize,
+            cancellationToken);
+        return new PagedResult<Product>(items, filter.Page, filter.PageSize, totalCount);
     }
 
     public async Task<Product> GetByIdAsync(
@@ -47,5 +40,23 @@ public class ProductService(
         var product = await repository.AddAsync(new Product(Guid.NewGuid(), request.Name.Trim(), request.Price,
             request.Weight, request.Type, DateTimeOffset.UtcNow, request.WarehouseNumber), cancellationToken);
         return product.Id;
+    }
+
+    public async Task<Product> UpdateAsync(Guid id, UpdateProductRequest request, CancellationToken cancellationToken = default)
+    {
+        await updateValidator.ValidateAndThrowAsync(request, cancellationToken);
+        var existing = await repository.GetByIdAsync(id, cancellationToken)
+            ?? throw new ProductNotFoundException(id);
+
+        var updated = await repository.UpdateAsync(existing with
+        {
+            Name = request.Name.Trim(),
+            Price = request.Price,
+            Weight = request.Weight,
+            Type = request.Type,
+            WarehouseNumber = request.WarehouseNumber
+        }, cancellationToken);
+
+        return updated ?? throw new ProductNotFoundException(id);
     }
 }

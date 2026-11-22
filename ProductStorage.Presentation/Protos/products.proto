@@ -22,6 +22,13 @@ service ProductService {
       body: "*"
     };
   }
+
+  rpc UpdateProduct (UpdateProductRequest) returns (Product) {
+    option (google.api.http) = {
+      put: "/v1/products/{id}"
+      body: "*"
+    };
+  }
 }
 
 message Product {
@@ -70,4 +77,13 @@ message CreateProductRequest {
 
 message CreateProductResponse {
   string id = 1;
+}
+
+message UpdateProductRequest {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+  double weight = 4;
+  ProductType type = 5;
+  int32 warehouse_number = 6;
 }

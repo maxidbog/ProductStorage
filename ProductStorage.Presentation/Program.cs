@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ProductStorage.Infrastructure.Migrations;
 using ProductStorage.Presentation;
 
 Host.CreateDefaultBuilder(args)
@@ -20,4 +21,5 @@ Host.CreateDefaultBuilder(args)
         });
     })
     .Build()
+    .RunMigrations()
     .Run();

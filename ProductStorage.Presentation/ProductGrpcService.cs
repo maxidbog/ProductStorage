@@ -51,6 +51,27 @@ public class ProductGrpcService(IProductService service) : ProductService.Produc
         };
         return response;
     }
+
+    public override async Task<Product> UpdateProduct(UpdateProductRequest request, ServerCallContext context)
+    {
+        if (!Guid.TryParse(request.Id, out var id))
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "id must be a valid GUID."));
+
+        try
+        {
+            var product = await service.UpdateAsync(id, new Application.UpdateProductRequest(
+                request.Name,
+                (decimal)request.Price,
+                (decimal)request.Weight,
+                ToDomainType(request.Type),
+                request.WarehouseNumber), context.CancellationToken);
+            return ToGrpc(product);
+        }
+        catch (ProductNotFoundException exception)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, exception.Message));
+        }
+    }
     
     private static Product ToGrpc(Domain.Product product) => new()
     {

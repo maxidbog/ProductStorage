@@ -26,4 +26,17 @@ public class ProductFilterValidator : AbstractValidator<ProductFilter>
                                    x.CreatedFrom <= x.CreatedTo)
             .WithMessage("CreatedFrom must be earlier than or equal to CreatedTo.");
     }
+
+}
+
+public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequest>
+{
+    public UpdateProductRequestValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Price).GreaterThan(0);
+        RuleFor(x => x.Weight).GreaterThan(0);
+        RuleFor(x => x.Type).IsInEnum().NotEqual(Domain.ProductType.Unknown);
+        RuleFor(x => x.WarehouseNumber).GreaterThan(0);
+    }
 }

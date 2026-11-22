@@ -9,6 +9,13 @@ public record CreateProductRequest(
     ProductType Type,
     int WarehouseNumber);
 
+public record UpdateProductRequest(
+    string Name,
+    decimal Price,
+    decimal Weight,
+    ProductType Type,
+    int WarehouseNumber);
+
 public record ProductFilter(
     DateTimeOffset? CreatedFrom = null,
     DateTimeOffset? CreatedTo = null,
