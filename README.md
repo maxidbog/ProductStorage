@@ -1,19 +1,57 @@
-Swagger на https://localhost:7006
-Также есть консольный grpc клиент
+REST и gRPC API для работы с товарами на ASP.NET Core.
 
-## PostgreSQL
+## Требования
 
-По умолчанию приложение использует connection string `Postgres` из `appsettings.json`.
-Создайте локальную базу `product_storage`, затем запустите приложение: миграция FluentMigrator создаст таблицу `products` автоматически.
+- .NET 9
+- Docker Desktop
 
-Пример Docker:
+## Запуск PostgreSQL
 
-```powershell
-docker run --name product-storage-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=product_storage -p 5432:5432 -d postgres
-```
-
-Интеграционные тесты запускают PostgreSQL через Testcontainers и требуют запущенный Docker Desktop:
+Файл docker-compose.yml находится в корне проекта. Он создаёт базу
+product_storage.
 
 ```powershell
-dotnet test ProductStorage.Tests/ProductStorage.Tests.csproj
+docker compose up -d postgres
 ```
+
+Остановка:
+
+```powershell
+docker compose stop postgres
+```
+
+Удаление контейнера и данных:
+
+```powershell
+docker compose down -v
+```
+
+Адрес postgres 127.0.0.1:5432.
+
+При запуске MigrationRunner применяет все миграции и создаёт
+таблицу products, если её нет.
+
+- Swagger: https://localhost:7006
+- REST API: https://localhost:7006
+- gRPC API: https://localhost:7007
+
+## gRPC-клиент
+
+Консольный клиент запускается отдельно:
+
+```powershell
+dotnet run --project ProductStorage.GrpcClient
+```
+
+Запускайте приложение и gRPC-клиент одновременно.
+
+## Подключение к базе
+
+Строка подключения берётся из `ConnectionStrings:Postgres` в
+`ProductStorage.Presentation/appsettings.json`. Данные пользователя и базы должны
+совпадать с настройками `docker-compose.yml`.
+
+## Тесты
+
+Интеграционные тесты запускают отдельный контейнер через Testcontainers,
+поэтому Docker Desktop должен быть запущен.
